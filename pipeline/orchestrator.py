@@ -2,6 +2,7 @@
 from __future__ import annotations
 import logging
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
 import uuid
 
 import pandas as pd
@@ -15,9 +16,23 @@ from .source import CafeFSource
 
 def configure_logging(settings: Settings) -> logging.Logger:
     log = logging.getLogger("pipeline")
-    if not log.handlers:
-        (settings.root / "logs").mkdir(exist_ok=True); handler = RotatingFileHandler(settings.root / "logs/pipeline.log", maxBytes=5_000_000, backupCount=3)
-        handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")); log.addHandler(handler); log.addHandler(logging.StreamHandler()); log.setLevel(logging.INFO)
+    log_path = settings.root / "logs/pipeline.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    has_current_file = False
+    for handler in tuple(log.handlers):
+        if isinstance(handler, RotatingFileHandler):
+            if Path(handler.baseFilename).resolve() == log_path.resolve():
+                has_current_file = True
+            else:
+                log.removeHandler(handler)
+                handler.close()
+    if not has_current_file:
+        handler = RotatingFileHandler(log_path, maxBytes=5_000_000, backupCount=3)
+        handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+        log.addHandler(handler)
+    if not any(type(handler) is logging.StreamHandler for handler in log.handlers):
+        log.addHandler(logging.StreamHandler())
+    log.setLevel(logging.INFO)
     return log
 
 
