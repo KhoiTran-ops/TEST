@@ -1,0 +1,9 @@
+APScheduler>=3.10,<4
+numpy>=1.26
+pandas>=2.2
+plotly>=5.20
+python-dotenv>=1.0
+PyYAML>=6.0
+SQLAlchemy>=2.0
+streamlit>=1.37
+pytest>=8.0

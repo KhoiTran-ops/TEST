@@ -1,0 +1,19 @@
+automation:
+  timezone: Asia/Ho_Chi_Minh
+  schedule_hour: 18
+  schedule_minute: 0
+  weekdays: [monday, tuesday, wednesday, thursday, friday]
+dashboard:
+  refresh_interval_seconds: 60
+analysis:
+  sma_short: 20
+  sma_long: 50
+  rsi_period: 14
+  volume_ma_period: 20
+  volume_multiplier: 1.2
+database:
+  pool_size: 5
+pipeline:
+  invalid_record_threshold: 0.05
+source:
+  dataset_url: null
